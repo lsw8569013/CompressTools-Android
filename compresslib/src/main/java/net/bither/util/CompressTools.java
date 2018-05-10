@@ -103,6 +103,19 @@ public class CompressTools {
         FileUtil.runOnSubThread(new Runnable() {
             @Override
             public void run() {
+                
+                BitmapFactory.Options newOpts = new BitmapFactory.Options();
+                //开始读入图片，此时把options.inJustDecodeBounds 设回true了
+                newOpts.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFile(file.getAbsolutePath(), newOpts);
+                //宽大于高 ,横屏拍摄，最大宽高 限制互换
+                if(newOpts.outWidth > newOpts.outHeight ){
+                    int temp = maxWidth;
+                    maxWidth = maxHeight;
+                    maxHeight = temp;
+                }
+                
                 compressTOBitmapJni(context, Uri.fromFile(file), maxWidth, maxHeight, compressFormat, bitmapConfig, quality,
                         destinationDirectoryPath, fileNamePrefix, fileName, optimize, onCompressBitmapListener);
             }
